@@ -11,6 +11,5 @@ public class Main {
         // TODO game options
 
         game.getGameBoard().printGameBoard();
-        System.out.printf("Hello world\n");
     }
 }

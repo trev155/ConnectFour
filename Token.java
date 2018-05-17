@@ -1,9 +1,23 @@
 package ConnectFour;
 
-abstract class Token {
-    int row;
-    int col;
-    String symbol;
+/*
+A Token represents a single space in the GameBoard.
+If occupied is true, then the space has been filled by a player.
+Otherwise, the token is empty, meaning it represents an empty space on the GameBoard.
+Tokens by default start off as unoccupied.
+*/
+class Token {
+    private int row;
+    private int col;
+    private String symbol;
+    private boolean occupied;
+
+    Token(int row, int col) {
+        this.row = row;
+        this.col = col;
+        this.symbol = "O";  // "O" representing an empty space
+        this.occupied = false;
+    }
 
     public int getRow() {
         return row;
