@@ -42,4 +42,8 @@ class Token {
     public void setOccupied() {
         this.occupied = true;
     }
+
+    public void clearOccupied() {
+        this.occupied = false;
+    }
 }

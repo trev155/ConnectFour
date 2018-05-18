@@ -5,13 +5,14 @@ import java.util.ArrayList;
 public class GameBoard {
     private int numRows;
     private int numCols;
+    private int numOccupied;
     private ArrayList<ArrayList<Token>> board;
 
     GameBoard(int r, int c) {
         this.numRows = r;
         this.numCols = c;
         initializeGameBoard();
-
+        this.numOccupied = 0;
     }
 
     /*
@@ -37,7 +38,7 @@ public class GameBoard {
         for (int i = 0; i < numRows; i++) {
             System.out.printf("[Row #%d]: ", i);
             for (int j = 0; j < numCols; j++) {
-                System.out.printf("%s ", this.board.get(i).get(j).getSymbol());
+                System.out.printf("%s ", getTokenAtPosition(i, j).getSymbol());
             }
             System.out.printf("\n");
         }
@@ -78,11 +79,14 @@ public class GameBoard {
     /*
     The insertion of a token is simply just setting a Token's "occupied" to False,
     and then setting its symbol accordingly.
+
+    Additionally, make sure to update the token counter.
     */
     public void setToken(int row, int col, String symbol) {
         Token t = getTokenAtPosition(row, col);
         t.setSymbol(symbol);
         t.setOccupied();
+        this.numOccupied += 1;
     }
 
     /*
@@ -90,7 +94,14 @@ public class GameBoard {
     symbols.
     */
     public void clearBoard() {
-        // TODO
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                Token t = getTokenAtPosition(row, col);
+                t.clearOccupied();
+                t.setSymbol("O");
+            }
+        }
+        this.numOccupied = 0;
     }
 
     public int getNumRows() {
