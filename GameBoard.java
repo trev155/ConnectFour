@@ -50,7 +50,7 @@ public class GameBoard {
     Returns -1 if column is full.
     */
     public int findNextAvailableRowInColumn(int col) {
-        for (int row = this.numRows - 1; row > 0; row--) {
+        for (int row = this.numRows - 1; row >= 0; row--) {
             if (!isSpaceOccupied(row, col)) {
                 return row;
             }
