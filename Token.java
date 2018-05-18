@@ -30,4 +30,16 @@ class Token {
     public String getSymbol() {
         return symbol;
     }
+
+    public boolean getOccupied() {
+        return occupied;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public void setOccupied() {
+        this.occupied = true;
+    }
 }

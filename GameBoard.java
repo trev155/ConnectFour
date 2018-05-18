@@ -29,13 +29,6 @@ public class GameBoard {
     }
 
     /*
-    Insert a Token into this GameBoard at the specified column.
-     */
-    void insertToken(Token token, int column) {
-
-    }
-
-    /*
     Print out this GameBoard in a human-readable format.
     Note that row 0 refers to the top of the game board.
     */
@@ -51,11 +44,64 @@ public class GameBoard {
         System.out.printf("____________________________\n");
     }
 
+    /*
+    Find the next row index that a token can be placed in this GameBoard's column.
+    Returns an integer from [0, numRows - 1].
+    Returns -1 if column is full.
+    */
+    public int findNextAvailableRowInColumn(int col) {
+        for (int row = this.numRows - 1; row > 0; row--) {
+            if (!isSpaceOccupied(row, col)) {
+                return row;
+            }
+        }
+        // Caller should handle this error case.
+        return -1;
+    }
+
+    /*
+    Return the Token at the specified position on the GameBoard.
+    */
+    private Token getTokenAtPosition(int row, int col) {
+        return board.get(row).get(col);
+    }
+
+    /*
+    Check if the position at (row, col) in this GameBoard is occupied.
+    The element at board.get(row).get(col) is a Token. Check if this Token's
+    occupied field is true.
+    */
+    private boolean isSpaceOccupied(int row, int col) {
+        return board.get(row).get(col).getOccupied();
+    }
+
+    /*
+    The insertion of a token is simply just setting a Token's "occupied" to False,
+    and then setting its symbol accordingly.
+    */
+    public void setToken(int row, int col, String symbol) {
+        Token t = getTokenAtPosition(row, col);
+        t.setSymbol(symbol);
+        t.setOccupied();
+    }
+
+    /*
+    Clearing the GameBoard means setting all the Tokens in the board to unoccupied, and resetting their
+    symbols.
+    */
+    public void clearBoard() {
+        // TODO
+    }
+
     public int getNumRows() {
         return this.numRows;
     }
 
     public int getNumCols() {
         return this.numCols;
+    }
+
+    public ArrayList<ArrayList<Token>> getBoard() {
+        return this.board;
     }
 }

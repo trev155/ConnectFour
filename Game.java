@@ -19,6 +19,18 @@ public class Game {
         this.gameBoard = new GameBoard(rows, cols);
     }
 
+    /*
+    Insert a Token into this GameBoard at the specified column.
+    */
+    public void insertToken(int col, String symbol) {
+        int row = gameBoard.findNextAvailableRowInColumn(col);
+        if (row < 0) {
+            throw new IllegalArgumentException("Column is full, cannot insert token at this column");
+        }
+
+        gameBoard.setToken(row, col, symbol);
+    }
+
     public GameBoard getGameBoard() {
         return this.gameBoard;
     }

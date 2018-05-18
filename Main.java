@@ -11,5 +11,9 @@ public class Main {
         // TODO game options
 
         game.getGameBoard().printGameBoard();
+        game.insertToken(1, "A");
+        game.insertToken(1, "B");
+        game.insertToken(6, "A");
+        game.getGameBoard().printGameBoard();
     }
 }
