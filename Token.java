@@ -7,24 +7,22 @@ Otherwise, the token is empty, meaning it represents an empty space on the GameB
 Tokens by default start off as unoccupied.
 */
 class Token {
-    private int row;
-    private int col;
+    private Pair position;
     private String symbol;
     private boolean occupied;
 
     Token(int row, int col) {
-        this.row = row;
-        this.col = col;
+        this.position = new Pair(row, col);
         this.symbol = "O";  // "O" representing an empty space
         this.occupied = false;
     }
 
     public int getRow() {
-        return row;
+        return position.getRow();
     }
 
     public int getCol() {
-        return col;
+        return position.getCol();
     }
 
     public String getSymbol() {

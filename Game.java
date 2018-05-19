@@ -1,14 +1,8 @@
 package ConnectFour;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import jdk.internal.util.xml.impl.Input;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.NumberFormat;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 /*
 A Game object contains everything that is needed to run the game.
@@ -22,14 +16,14 @@ public class Game {
     private static final int GAME_COLS = 7;
 
     private GameBoard gameBoard;
-    private boolean hasGameStarted;
+    private boolean isGameRunning;
     private Player playerOne;
     private Player playerTwo;
     private BufferedReader reader;
 
     Game() {
         this.gameBoard = new GameBoard(GAME_ROWS, GAME_COLS);
-        this.hasGameStarted = false;
+        this.isGameRunning = false;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
@@ -48,6 +42,9 @@ public class Game {
         this.playerOne = new Player(playerOneName, PLAYER_ONE_SYMBOL);
         this.playerTwo = new Player(playerTwoName, PLAYER_TWO_SYMBOL);
 
+        System.out.println("Game Board:");
+        gameBoard.printGameBoard();
+
         gameLoop(playerOne, playerTwo);
 
         // TODO when gameLoop() ends, make sure to cleanup and close the reader
@@ -58,7 +55,7 @@ public class Game {
     Main game loop.
     */
     private void gameLoop(Player p1, Player p2) throws IOException {
-        this.hasGameStarted = true;
+        this.isGameRunning = true;
         int curPlayerIndex = 1;     // 1 if p1, 2 if p2
 
         while (true) {
@@ -99,18 +96,13 @@ public class Game {
             }
 
             // After inserting into the GameBoard, check if the game is over (tie or victory)
-            int rvGame = isGameOver();
+            int rvGame = isGameOver(curPlayer);
             if (rvGame >= 0) {
                 System.out.println("Game over!");
                 // TODO Print who won or if tie
                 gameBoard.printGameBoard();
                 gameBoard.clearBoard();
-                break;
-            }
-
-            // temp for testing - this loop should really break if the game ends
-            if (columnInput == 6) {
-                gameBoard.clearBoard();
+                this.isGameRunning = false;
                 break;
             }
 
@@ -132,18 +124,23 @@ public class Game {
         return 0;
     }
 
-
     /*
     Check if this Game is over.
-    This involves checking either if the GameBoard is full, in which case we have a tie.
-    Or, check if either player has connected 4 tokens together.
+    This involves checking either if the GameBoard is full, in which case we have a tie, or if Player p has won.
+    Note that after some Player p makes a move, we only need to check if Player p has won. The other player
+    is irrelevant. Therefore, this function should be called for a specific player, after they have made a move.
 
     Return -1 if this Game is NOT over.
     Return 0 if tie.
-    Return 1 if Player 1 wins, 2 if Player 2 wins.
+    Return 1 if player p has won.
     */
-    public int isGameOver() {
-        // TODO
+    public int isGameOver(Player p) {
+        if (gameBoard.checkVictory(p)) {
+            return 1;
+        }
+        if (gameBoard.checkTie()) {
+            return 0;
+        }
         return -1;
     }
 
