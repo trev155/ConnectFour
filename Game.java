@@ -29,8 +29,14 @@ public class Game {
 
     public void run() throws IOException {
         gameSetup();
-        gameLoop(playerOne, playerTwo);
-        postGame();
+        isGameRunning = true;
+        while (isGameRunning) {
+            gameLoop(playerOne, playerTwo);
+            boolean continueRunning = postGame();
+            if (!continueRunning) {
+                isGameRunning = false;
+            }
+        }
         tearDown();
     }
 
@@ -41,6 +47,7 @@ public class Game {
     private void gameSetup() throws IOException {
         String playerOneName, playerTwoName;
 
+        System.out.println("----- CONNECT FOUR -----");
         System.out.println("Enter name of Player One:");
         playerOneName = reader.readLine();
         System.out.println("Enter name of Player Two:");
@@ -48,15 +55,14 @@ public class Game {
 
         this.playerOne = new Player(playerOneName, PLAYER_ONE_SYMBOL);
         this.playerTwo = new Player(playerTwoName, PLAYER_TWO_SYMBOL);
-
-        gameBoard.printGameBoard();
     }
 
     /*
     Main game loop.
     */
     private void gameLoop(Player p1, Player p2) throws IOException {
-        this.isGameRunning = true;
+        gameBoard.printGameBoard();
+
         int curPlayerIndex = 1;     // 1 if p1, 2 if p2
 
         while (true) {
@@ -68,8 +74,8 @@ public class Game {
                 curPlayer = p2;
             }
 
-            System.out.printf("[Current Player: %s] Enter a column to insert at (0 = left, %d = right)\n",
-                    curPlayer.getUsername(), gameBoard.getNumCols() - 1);
+            System.out.printf("[Current Player: %s, Symbol: %s] Enter a column to insert at (0 = left, %d = right)\n",
+                    curPlayer.getUsername(), curPlayer.getSymbol(), gameBoard.getNumCols() - 1);
 
             // Read input from user. Verify that it is a number, and verify the number is in proper range.
             int columnInput;
@@ -104,16 +110,17 @@ public class Game {
             // After inserting into the GameBoard, check if the game is over (tie or victory)
             int rvGame = isGameOver(curPlayer);
             if (rvGame >= 0) {
+                gameBoard.printGameBoard();
+                gameBoard.clearBoard();
+
                 System.out.println("Game over");
                 if (rvGame == 0) {
                     System.out.println("Tie game!");
                 } else {
                     System.out.println("---Winner---");
-                    System.out.printf("-- %s --", curPlayer.getUsername());
+                    System.out.printf("-- %s --\n", curPlayer.getUsername());
                 }
-                gameBoard.printGameBoard();
-                gameBoard.clearBoard();
-                this.isGameRunning = false;
+
                 break;
             }
 
@@ -126,8 +133,10 @@ public class Game {
     Method that should run after a game is completed. Prompts user for whether or not they
     want to play again, etc.
     */
-    private void postGame() {
-
+    private boolean postGame() throws IOException {
+        System.out.println("Play again? (y/n)");
+        String userInput = reader.readLine();
+        return userInput.equals("y");
     }
 
     /*
