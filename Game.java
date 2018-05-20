@@ -12,8 +12,8 @@ Basically, anything related to a Game instance is contained here.
 public class Game {
     private static final String PLAYER_ONE_SYMBOL = "A";
     private static final String PLAYER_TWO_SYMBOL = "B";
-    private static final int GAME_ROWS = 6;
-    private static final int GAME_COLS = 7;
+    private static final int GAME_ROWS = 7;
+    private static final int GAME_COLS = 6;
 
     private GameBoard gameBoard;
     private boolean isGameRunning;
@@ -27,11 +27,18 @@ public class Game {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    public void run() throws IOException {
+        gameSetup();
+        gameLoop(playerOne, playerTwo);
+        postGame();
+        tearDown();
+    }
+
     /*
     Preamble to the main game loop.
     Initialization of the Players.
     */
-    public void gameSetup() throws IOException {
+    private void gameSetup() throws IOException {
         String playerOneName, playerTwoName;
 
         System.out.println("Enter name of Player One:");
@@ -42,13 +49,7 @@ public class Game {
         this.playerOne = new Player(playerOneName, PLAYER_ONE_SYMBOL);
         this.playerTwo = new Player(playerTwoName, PLAYER_TWO_SYMBOL);
 
-        System.out.println("Game Board:");
         gameBoard.printGameBoard();
-
-        gameLoop(playerOne, playerTwo);
-
-        // TODO when gameLoop() ends, make sure to cleanup and close the reader
-        tearDown();
     }
 
     /*
@@ -59,7 +60,16 @@ public class Game {
         int curPlayerIndex = 1;     // 1 if p1, 2 if p2
 
         while (true) {
-            System.out.println("Enter a column to insert at.");
+            // Print statements
+            Player curPlayer;
+            if (curPlayerIndex == 1) {
+                curPlayer = p1;
+            } else {
+                curPlayer = p2;
+            }
+
+            System.out.printf("[Current Player: %s] Enter a column to insert at (0 = left, %d = right)\n",
+                    curPlayer.getUsername(), gameBoard.getNumCols() - 1);
 
             // Read input from user. Verify that it is a number, and verify the number is in proper range.
             int columnInput;
@@ -76,19 +86,15 @@ public class Game {
             }
 
             // At this point, the input is validated. Insert into the GameBoard.
-            Player curPlayer;
-            if (curPlayerIndex == 1) {
-                curPlayer = p1;
-            } else {
-                curPlayer = p2;
-            }
-
             int rv  = insertToken(columnInput, curPlayer);
             if (rv < 0) {
                 System.out.println("Column is full, cannot insert token at this column");
                 continue;
             }
 
+            System.out.printf("[Player: %s]: Move: Insert at column (%s)\n", curPlayer.getUsername(), columnInput);
+
+            // Switch the active player
             if (curPlayerIndex == 1) {
                 curPlayerIndex = 2;
             } else {
@@ -98,8 +104,13 @@ public class Game {
             // After inserting into the GameBoard, check if the game is over (tie or victory)
             int rvGame = isGameOver(curPlayer);
             if (rvGame >= 0) {
-                System.out.println("Game over!");
-                // TODO Print who won or if tie
+                System.out.println("Game over");
+                if (rvGame == 0) {
+                    System.out.println("Tie game!");
+                } else {
+                    System.out.println("---Winner---");
+                    System.out.printf("-- %s --", curPlayer.getUsername());
+                }
                 gameBoard.printGameBoard();
                 gameBoard.clearBoard();
                 this.isGameRunning = false;
@@ -112,10 +123,25 @@ public class Game {
     }
 
     /*
+    Method that should run after a game is completed. Prompts user for whether or not they
+    want to play again, etc.
+    */
+    private void postGame() {
+
+    }
+
+    /*
+    Tear down this Game instance. Involves things like closing the input reader.
+    */
+    private void tearDown() throws IOException {
+        this.reader.close();
+    }
+
+    /*
     Insert a Token into this GameBoard at the specified column.
     Returns 0 on success, -1 if failure.
     */
-    public int insertToken(int col, Player player) {
+    private int insertToken(int col, Player player) {
         int row = gameBoard.findNextAvailableRowInColumn(col);
         if (row < 0) {
             return -1;
@@ -134,7 +160,7 @@ public class Game {
     Return 0 if tie.
     Return 1 if player p has won.
     */
-    public int isGameOver(Player p) {
+    private int isGameOver(Player p) {
         if (gameBoard.checkVictory(p)) {
             return 1;
         }
@@ -144,16 +170,16 @@ public class Game {
         return -1;
     }
 
-    /*
-    Tear down this Game instance. Involves things like closing the input reader.
-    */
-    public void tearDown() throws IOException {
-        this.reader.close();
-
-    }
-
     public GameBoard getGameBoard() {
         return this.gameBoard;
+    }
+
+    public Player getPlayerOne() {
+        return playerOne;
+    }
+
+    public Player getPlayerTwo() {
+        return playerTwo;
     }
 
 }

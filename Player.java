@@ -4,8 +4,8 @@ package ConnectFour;
 A class representing a player in the game.
 */
 public class Player {
-    String username;
-    String symbol;
+    private String username;
+    private String symbol;
 
     Player(String username, String symbol) {
         this.username = username;

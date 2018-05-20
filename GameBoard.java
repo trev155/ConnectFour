@@ -36,7 +36,7 @@ public class GameBoard {
     Note that row 0 refers to the top of the game board.
     */
     public void printGameBoard() {
-        System.out.println("[Top of board]----------");
+        System.out.println("");
         for (int i = 0; i < numRows; i++) {
             System.out.printf("[Row #%d]: ", i);
             for (int j = 0; j < numCols; j++) {
@@ -188,10 +188,32 @@ public class GameBoard {
         }
 
         // left side, bottom right direction
-        // TODO
+        for (int r = 0; r < numRows - 3; r++) {
+            ArrayList<Pair> sequence = new ArrayList<>();
+            int row = r;
+            int col = 0;
+            while (row < numRows & col < numCols) {
+                Pair position = new Pair(row, col);
+                sequence.add(position);
+                row += 1;
+                col += 1;
+            }
+            allSequences.add(sequence);
+        }
 
         // top side, bottom right direction
-        // TODO
+        for (int c = 0; c < numCols - 3; c++) {
+            ArrayList<Pair> sequence = new ArrayList<>();
+            int row = 0;
+            int col = c;
+            while (row < numRows & col < numCols) {
+                Pair position = new Pair(row, col);
+                sequence.add(position);
+                row += 1;
+                col += 1;
+            }
+            allSequences.add(sequence);
+        }
 
         return allSequences;
     }
